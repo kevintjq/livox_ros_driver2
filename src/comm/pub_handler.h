@@ -101,6 +101,7 @@ class PubHandler {
   //publish callback
   void CheckTimer(uint32_t id);
   void PublishPointCloud();
+  void ApplyLidarExtrinsicToImu(uint32_t handle, ImuData& imu_data);
   static void OnLivoxLidarPointCloudCallback(uint32_t handle, const uint8_t dev_type,
                                              LivoxLidarEthernetPacket *data, void *client_data);
   
