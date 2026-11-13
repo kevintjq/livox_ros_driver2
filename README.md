@@ -133,14 +133,20 @@ ros2 launch livox_ros_driver2 rviz_HAP_launch.py
 
 Launch files of ROS are in the "ws_livox/src/livox_ros_driver2/launch_ROS1" directory and launch files of ROS2 are in the "ws_livox/src/livox_ros_driver2/launch_ROS2" directory. Different launch files have different configuration parameter values and are used in different scenarios:
 
-| launch file name   | Description                                                                         |
-| ------------------ | ----------------------------------------------------------------------------------- |
-| rviz_HAP.launch    | Connect to HAP LiDAR devicePublish pointcloud2 format  dataAutoload rviz            |
-| msg_HAP.launch     | Connect to HAP LiDAR devicePublish livox customized pointcloud data                 |
-| rviz_MID360.launch | Connect to MID360 LiDAR devicePublish pointcloud2 format data Autoload rviz         |
-| msg_MID360.launch  | Connect to MID360 LiDAR devicePublish livox customized pointcloud data              |
-| rviz_mixed.launch  | Connect to HAP and MID360 LiDAR devicePublish pointcloud2 format data Autoload rviz |
-| msg_mixed.launch   | Connect to HAP and MID360 LiDAR devicePublish livox customized pointcloud data      |
+| launch file name          | Description                                                  |
+| ------------------------- | ------------------------------------------------------------ |
+| rviz_HAP.launch   | Connect to HAP LiDAR device<br>Publish pointcloud2 format  data<br>Autoload rviz |
+| msg_HAP.launch     | Connect to HAP LiDAR device<br>Publish livox customized pointcloud data|
+| rviz_MID360.launch        | Connect to MID360 LiDAR device<br>Publish pointcloud2 format data <br>Autoload rviz|
+| msg_MID360.launch          | Connect to MID360 LiDAR device<br>Publish livox customized pointcloud data |
+| rviz_MID360s.launch        | Connect to MID360s LiDAR device<br>Publish pointcloud2 format data <br>Autoload rviz|
+| msg_MID360s.launch          | Connect to MID360s LiDAR device<br>Publish livox customized pointcloud data |
+| rviz_AVIA2.launch        | Connect to Avia2 LiDAR device<br>Publish pointcloud2 format data <br>Autoload rviz|
+| msg_AVIA2.launch          | Connect to Avia2 LiDAR device<br>Publish livox customized pointcloud data |
+| rviz_MID360l.launch        | Connect to MID360l LiDAR device<br>Publish pointcloud2 format data <br>Autoload rviz|
+| msg_MID360l.launch          | Connect to MID360l LiDAR device<br>Publish livox customized pointcloud data |
+| rviz_mixed.launch    | Connect to HAP and MID360 LiDAR device<br>Publish pointcloud2 format data <br>Autoload rviz|
+| msg_mixed.launch      | Connect to HAP and MID360 LiDAR device<br>Publish livox customized pointcloud data |
 
 ### 3.2 Livox ros driver 2 internal main parameter configuration instructions
 
@@ -203,7 +209,7 @@ uint8   line            # laser number in lidar
 
 ## 4. LiDAR config
 
-LiDAR Configurations (such as ip, port, data type... etc.) can be set via a json-style config file. Config files for single HAP, Mid360 and mixed-LiDARs are in the "config" folder. The parameter naming *'user_config_path'* in launch files indicates such json file path.
+LiDAR Configurations (such as ip, port, data type... etc.) can be set via a json-style config file. Config files for single HAP, Mid360, Mid360s, Avia2 and mixed-LiDARs are in the "config" folder. The parameter naming *'user_config_path'* in launch files indicates such json file path.
 
 1. Follow is a configuration example for HAP LiDAR (located in config/HAP_config.json):
 
@@ -269,7 +275,50 @@ The parameter attributes in the above json file are described in the following t
 For more infomation about the HAP config, please refer to:
 [HAP Config File Description](https://github.com/Livox-SDK/Livox-SDK2/wiki/hap-config-file-description)
 
-2. When connecting multiple LiDARs, add objects corresponding to different LiDARs to the "lidar_configs" array. Examples of mixed-LiDARs config file contents are as follows :
+2. Follow is a configuration example for Avia2 LiDAR (located in config/AVIA2_config.json). The Mid360 and Mid360s LiDARs use the same port numbers and config structure, only with a different device key ("MID360" / "Mid360s", see config/MID360_config.json and config/MID360s_config.json):
+
+```json
+{
+  "lidar_summary_info" : {
+    "lidar_type": 8
+  },
+  "Avia2": {
+    "lidar_net_info" : {
+      "cmd_data_port"  : 56100,
+      "push_msg_port"  : 56200,
+      "point_data_port": 56300,
+      "imu_data_port"  : 56400,
+      "log_data_port"  : 56500
+    },
+    "host_net_info" : [
+      {
+        "host_ip"        : "192.168.1.5",
+        "cmd_data_port"  : 56101,
+        "push_msg_port"  : 56201,
+        "point_data_port": 56301,
+        "imu_data_port"  : 56401,
+        "log_data_port"  : 56501
+      }
+    ]
+  },
+  "lidar_configs" : [
+    {
+      "ip" : "192.168.1.12",
+      "pcl_data_type" : 1,
+      "extrinsic_parameter" : {
+        "roll": 0.0,
+        "pitch": 0.0,
+        "yaw": 0.0,
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ]
+}
+```
+
+3. When connecting multiple LiDARs, add objects corresponding to different LiDARs to the "lidar_configs" array. Examples of mixed-LiDARs config file contents are as follows :
 
 ```json
 {
@@ -349,8 +398,7 @@ For more infomation about the HAP config, please refer to:
   ]
 }
 ```
-
-3. when multiple nics on the host connect to multiple LiDARs, you need to add objects corresponding to different LiDARs to the lidar_configs array. Run different luanch files separately, and the following is an example of mixing lidar configuration file contents:
+4. when multiple nics on the host connect to multiple LiDARs, you need to add objects corresponding to different LiDARs to the lidar_configs array. Run different luanch files separately, and the following is an example of mixing lidar configuration file contents:
 
 **MID360_config1:**
 
@@ -545,6 +593,9 @@ For more infomation about the HAP config, please refer to:
 
 * HAP
 * Mid360
+* Mid360s
+* Avia2
+* Mid360L
 * (more types are comming soon...)
 
 ## 6. FAQ
@@ -569,3 +620,4 @@ Please add '/usr/local/lib' to the env LD_LIBRARY_PATH.
   export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
   source ~/.bashrc
   ```
+

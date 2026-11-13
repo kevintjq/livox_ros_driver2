@@ -58,6 +58,7 @@ class LidarPubHandler {
   void ProcessCartesianHighPoint(RawPacket & pkt);
   void ProcessCartesianLowPoint(RawPacket & pkt);
   void ProcessSphericalPoint(RawPacket & pkt);
+  void ProcessDoubleEchoPoint(RawPacket& pkt);
   std::vector<PointXyzlt> points_clouds_;
   ExtParameterDetailed extrinsic_ = {
     {0, 0, 0},
@@ -136,3 +137,4 @@ PubHandler &pub_handler();
 }  // namespace livox_ros
 
 #endif  // LIVOX_DRIVER_PUB_HANDLER_H_
+
